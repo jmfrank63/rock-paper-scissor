@@ -16,14 +16,15 @@ fn main() {
     (1): Rock
     (2): Paper
     (3): Scissor
+    Any other to exit
     "
         .black();
         let user_choice = loop {
             println!("{}", header);
             let s = input("Please choose");
             match choice(&s) {
-                Ok(choice) => break choice,
-                Err(_) => {println!("No choice, exiting"); exit(0)},
+                Some(choice) => break choice,
+                None => {println!("No choice made, exiting"); exit(0)},
             };
         };
         let x = rand::thread_rng().gen_range(1..4);
@@ -37,13 +38,11 @@ fn main() {
         let s2 = "I choose:".blue();
         println!("{} {:?}", s1, user_choice.clone());
         println!("{} {:?}", s2, computer_choice.clone());
-        let (user_win, computer_win) = winner(user_choice, computer_choice);
-        if user_win == computer_win {
-            println!("{}", "Draw !".yellow());
-        } else if computer_win {
-            println!("{}", "You lose !".red());
-        } else {
-            println!("{}", "You win !".green());
-        }
+        match winner(user_choice, computer_choice) {
+            Some(true) => println!("{}", "You win !".green()),
+            Some(false) => println!("{}", "You lose !".red()),
+            None => println!("{}", "Draw !".yellow()),
+        };
     }
 }
+
